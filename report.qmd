@@ -1,5 +1,5 @@
 ---
-title: "EV Power - Lab 4 Project Report"
+title: "EV Power - Renewable Energy by State"
 format: typst
 ---
 
@@ -8,27 +8,44 @@ format: typst
 ## **Part 0: libraries**
 
 ```{r}
+library(tidyverse)
+
 
 ```
+## **Part 1:** **Overview**
 
-## **Part 1:** **Defining Research Question**
+Chosen Question: I wanted to understand the breakdown of renewable enrgy by state to see how it compares across the US. I decided to use the US total energy use dataset and create a map with states as the x-axis and renewable energy use as the y-axis, after filtering for just renewable energy.
 
-Chosen Question:
+## **Part 2: Description of Data and Methods **
 
-## **Part 2: Data Preparation and Cleaning**
+I used pivot long to organize the data into a data frame with the columns being energy source, energy use, and states (see below for data and methods where I actually perform the pivot long).# 
 
-```{r}
-
-```
-
-## **Part 3: Joining / Pivoting Datasets for Analysis**
+## **Part 3: Data and Methods**
 
 ```{r}
+library(tidyverse)
 
+df <- read.csv("/Users/karuna/stat133/project_4/ev-power-karunaevach/data/total-use-2023.csv")
+
+df_long <- df %>%
+  pivot_longer(
+    cols = -Energy_Source,        
+    names_to = "State",           
+    values_to = "Energy_Use"       
+  )
+  df_long
 ```
 
 ## **Part 4: Mapping Visualization**
 
 ```{r}
-
+df_long |> filter(Energy_Source == "total renewable-energy") |> arrange(Energy_Use) |>
+  ggplot(aes(y = Energy_Use,
+             x = State, 
+             group = State, color = State)) +
+  geom_point() +
+  geom_path() + scale_y_log10() + scale_y_discrete(expand = expansion(mult = c(1, 1))) +
+  labs(title = "Renewable vs. Coal by state")
 ```
+## **Part 5: Analysis**
+I thought it was super interesting how most states seemed to have a relatively similar energy use. I would have expected the numbers to greatly differ, but they seemed quite consistent across the board. 
